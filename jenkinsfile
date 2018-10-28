@@ -14,11 +14,6 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        stage('SCM') {
-            steps {
-                git url: 'git@gitlab.com:WaleedAdel/test-jenkins-pipeline.git'
-            }
-        }
         stage('build &&  SonarQube analysis') {
             steps {
                 withSonarQubeEnv('sonarQubeW') {
