@@ -1,0 +1,41 @@
+pipeline {
+    //agent { docker { image 'maven:3.3.3' } }
+    agent any
+    stages {
+        stage('compile') {
+            steps {
+                echo 'compiling'
+                sh 'mvn compile'
+            }
+        }
+        stage('test') {
+            steps {
+                echo 'testing 4'
+                sh 'mvn test'
+            }
+        }
+        stage('SCM') {
+            steps {
+                git url: 'git@gitlab.com:WaleedAdel/test-jenkins-pipeline.git'
+            }
+        }
+        stage('build &&  SonarQube analysis') {
+            steps {
+                withSonarQubeEnv('sonarQubeW') {
+                        sh 'mvn clean package sonar:sonar'
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Finished pipeline'
+        }
+        success {
+            echo 'This will run only if successful'
+        }
+        failure {
+            echo 'This will run only if failed'
+        }
+    }
+}
